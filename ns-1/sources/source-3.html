@@ -1,0 +1,438 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <title>Coverage Report > Sudoku</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/highlight-idea.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.pack.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">&lt;empty package name&gt;</a>
+</div>
+
+<h1>Coverage Summary for Class: Sudoku (&lt;empty package name&gt;)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">Sudoku</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    88.9%
+  </span>
+  <span class="absValue">
+    (16/18)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    91%
+  </span>
+  <span class="absValue">
+    (151/166)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<div class="sourceCode" id="sourceCode"><i class="no-highlight">1</i>&nbsp;/**
+<i class="no-highlight">2</i>&nbsp; * The Sudoku solver.
+<i class="no-highlight">3</i>&nbsp; *
+<i class="no-highlight">4</i>&nbsp; * @author Maxwell S. Freudenburg
+<i class="no-highlight">5</i>&nbsp; * @author Rowan Mukaida
+<i class="no-highlight">6</i>&nbsp; */
+<b class="nc"><i class="no-highlight">7</i>&nbsp;public class Sudoku {</b>
+<i class="no-highlight">8</i>&nbsp;
+<i class="no-highlight">9</i>&nbsp;    /** Prints the solution to the puzzle in the specified directory. */
+<i class="no-highlight">10</i>&nbsp;    public static void main(String[] args) {
+<b class="fc"><i class="no-highlight">11</i>&nbsp;        String puzzle = new In(&quot;sudoku1.txt&quot;).readAll();</b>
+<b class="fc"><i class="no-highlight">12</i>&nbsp;        Square[][] grid = createSquares(puzzle);</b>
+<b class="fc"><i class="no-highlight">13</i>&nbsp;        long startTime = System.nanoTime();</b>
+<b class="fc"><i class="no-highlight">14</i>&nbsp;        solve(grid);</b>
+<b class="fc"><i class="no-highlight">15</i>&nbsp;        long elapsedTime = System.nanoTime() - startTime;</b>
+<b class="fc"><i class="no-highlight">16</i>&nbsp;        System.out.println(&quot;Elapsed Time: &quot; + elapsedTime);</b>
+<b class="fc"><i class="no-highlight">17</i>&nbsp;        System.out.println(toString(grid));</b>
+<b class="fc"><i class="no-highlight">18</i>&nbsp;        System.out.println(puzzle.length());</b>
+<b class="fc"><i class="no-highlight">19</i>&nbsp;        puzzle = new In(&quot;sudoku - hardcore mode.txt&quot;).readAll();</b>
+<b class="fc"><i class="no-highlight">20</i>&nbsp;        grid = createSquares(puzzle);</b>
+<b class="fc"><i class="no-highlight">21</i>&nbsp;        startTime = System.nanoTime();</b>
+<b class="fc"><i class="no-highlight">22</i>&nbsp;        solve(grid);</b>
+<b class="fc"><i class="no-highlight">23</i>&nbsp;        elapsedTime = System.nanoTime() - startTime;</b>
+<b class="fc"><i class="no-highlight">24</i>&nbsp;        System.out.println(&quot;Elapsed Time: &quot; + elapsedTime);</b>
+<b class="fc"><i class="no-highlight">25</i>&nbsp;        System.out.println(toString(grid));</b>
+<b class="fc"><i class="no-highlight">26</i>&nbsp;        System.out.println(puzzle.length());</b>
+<i class="no-highlight">27</i>&nbsp;    }
+<i class="no-highlight">28</i>&nbsp;
+<i class="no-highlight">29</i>&nbsp;    /** Returns a new Location object with the specified row and column. */
+<i class="no-highlight">30</i>&nbsp;    static Location createLocation(int r, int c) {
+<b class="fc"><i class="no-highlight">31</i>&nbsp;        Location out = new Location();</b>
+<b class="fc"><i class="no-highlight">32</i>&nbsp;        out.column = c;</b>
+<b class="fc"><i class="no-highlight">33</i>&nbsp;        out.row = r;</b>
+<b class="fc"><i class="no-highlight">34</i>&nbsp;        return out;</b>
+<i class="no-highlight">35</i>&nbsp;    }
+<i class="no-highlight">36</i>&nbsp;
+<i class="no-highlight">37</i>&nbsp;    /** Returns an array of the eight Locations in the same row as here. */
+<i class="no-highlight">38</i>&nbsp;    static Location[] findRow(Location here) {
+<b class="fc"><i class="no-highlight">39</i>&nbsp;        int i = 0;</b>
+<b class="fc"><i class="no-highlight">40</i>&nbsp;        Location[] out = new Location[8];</b>
+<b class="fc"><i class="no-highlight">41</i>&nbsp;        int row = here.row;</b>
+<b class="fc"><i class="no-highlight">42</i>&nbsp;        for (int col = 0; col &lt; 9; ++col){</b>
+<b class="fc"><i class="no-highlight">43</i>&nbsp;            if (col == here.column) continue;</b>
+<b class="fc"><i class="no-highlight">44</i>&nbsp;            out[i] = createLocation(row, col);</b>
+<b class="fc"><i class="no-highlight">45</i>&nbsp;            i++;</b>
+<i class="no-highlight">46</i>&nbsp;        }
+<b class="fc"><i class="no-highlight">47</i>&nbsp;        return out;</b>
+<i class="no-highlight">48</i>&nbsp;    }
+<i class="no-highlight">49</i>&nbsp;
+<i class="no-highlight">50</i>&nbsp;    /** Returns an array of the eight Locations in the same column as here. */
+<i class="no-highlight">51</i>&nbsp;    static Location[] findColumn(Location here) {
+<b class="fc"><i class="no-highlight">52</i>&nbsp;        int i = 0;</b>
+<b class="fc"><i class="no-highlight">53</i>&nbsp;        Location[] out = new Location[8];</b>
+<b class="fc"><i class="no-highlight">54</i>&nbsp;        int col = here.column;</b>
+<b class="fc"><i class="no-highlight">55</i>&nbsp;        for (int row = 0; row &lt; 9; ++row){</b>
+<b class="fc"><i class="no-highlight">56</i>&nbsp;            if (row == here.row) continue;</b>
+<b class="fc"><i class="no-highlight">57</i>&nbsp;            out[i] = createLocation(row, col);</b>
+<b class="fc"><i class="no-highlight">58</i>&nbsp;            i++;</b>
+<i class="no-highlight">59</i>&nbsp;        }
+<b class="fc"><i class="no-highlight">60</i>&nbsp;        return out;</b>
+<i class="no-highlight">61</i>&nbsp;    }
+<i class="no-highlight">62</i>&nbsp;
+<i class="no-highlight">63</i>&nbsp;    /** Returns an array of the eight Locations in the same 3x3 block as here. */
+<i class="no-highlight">64</i>&nbsp;    static Location[] findBlock(Location here) {
+<b class="fc"><i class="no-highlight">65</i>&nbsp;        Location[] out = new Location[8];</b>
+<b class="fc"><i class="no-highlight">66</i>&nbsp;        Location blockLocation = new Location();</b>
+<b class="fc"><i class="no-highlight">67</i>&nbsp;        switch (here.column) {</b>
+<i class="no-highlight">68</i>&nbsp;            case 0: // no break means cases 0-2 default to the argument below case 2.
+<i class="no-highlight">69</i>&nbsp;            case 1:
+<i class="no-highlight">70</i>&nbsp;            case 2:
+<b class="fc"><i class="no-highlight">71</i>&nbsp;                blockLocation.column = 0;</b>
+<b class="fc"><i class="no-highlight">72</i>&nbsp;                break;</b>
+<i class="no-highlight">73</i>&nbsp;            case 3:
+<i class="no-highlight">74</i>&nbsp;            case 4:
+<i class="no-highlight">75</i>&nbsp;            case 5:
+<b class="fc"><i class="no-highlight">76</i>&nbsp;                blockLocation.column = 1;</b>
+<b class="fc"><i class="no-highlight">77</i>&nbsp;                break;</b>
+<i class="no-highlight">78</i>&nbsp;            case 6:
+<i class="no-highlight">79</i>&nbsp;            case 7:
+<i class="no-highlight">80</i>&nbsp;            case 8:
+<b class="fc"><i class="no-highlight">81</i>&nbsp;                blockLocation.column = 2;</b>
+<i class="no-highlight">82</i>&nbsp;                break;
+<i class="no-highlight">83</i>&nbsp;        }
+<b class="fc"><i class="no-highlight">84</i>&nbsp;        switch (here.row) {</b>
+<i class="no-highlight">85</i>&nbsp;            case 0:
+<i class="no-highlight">86</i>&nbsp;            case 1:
+<i class="no-highlight">87</i>&nbsp;            case 2:
+<b class="fc"><i class="no-highlight">88</i>&nbsp;                blockLocation.row = 0;</b>
+<b class="fc"><i class="no-highlight">89</i>&nbsp;                break;</b>
+<i class="no-highlight">90</i>&nbsp;            case 3:
+<i class="no-highlight">91</i>&nbsp;            case 4:
+<i class="no-highlight">92</i>&nbsp;            case 5:
+<b class="fc"><i class="no-highlight">93</i>&nbsp;                blockLocation.row = 1;</b>
+<b class="fc"><i class="no-highlight">94</i>&nbsp;                break;</b>
+<i class="no-highlight">95</i>&nbsp;            case 6:
+<i class="no-highlight">96</i>&nbsp;            case 7:
+<i class="no-highlight">97</i>&nbsp;            case 8:
+<b class="fc"><i class="no-highlight">98</i>&nbsp;                blockLocation.row = 2;</b>
+<i class="no-highlight">99</i>&nbsp;                break;
+<i class="no-highlight">100</i>&nbsp;        }
+<i class="no-highlight">101</i>&nbsp;        //  finds coords to populate via:
+<i class="no-highlight">102</i>&nbsp;        //  (block coord * 3) thru ((block coord * 3) + 3)
+<i class="no-highlight">103</i>&nbsp;        //  thus, block 2,0 searches coords (6-9, 0-3)
+<b class="fc"><i class="no-highlight">104</i>&nbsp;        int i = 0;</b>
+<b class="fc"><i class="no-highlight">105</i>&nbsp;        for (int row = blockLocation.row * 3; row &lt; (blockLocation.row * 3) + 3; ++row){</b>
+<b class="fc"><i class="no-highlight">106</i>&nbsp;            for (int col = blockLocation.column * 3; col &lt; (blockLocation.column * 3) + 3; ++col){</b>
+<b class="fc"><i class="no-highlight">107</i>&nbsp;                Location temp = createLocation(row, col);</b>
+<b class="fc"><i class="no-highlight">108</i>&nbsp;                if (temp.row == here.row &amp;&amp; temp.column == here.column) continue;</b>
+<b class="fc"><i class="no-highlight">109</i>&nbsp;                out[i] = temp;</b>
+<b class="fc"><i class="no-highlight">110</i>&nbsp;                ++i;</b>
+<i class="no-highlight">111</i>&nbsp;            }
+<i class="no-highlight">112</i>&nbsp;        }
+<i class="no-highlight">113</i>&nbsp;//        System.out.println(&quot;here: &quot; + here.row + &quot;,&quot; + here.column);
+<i class="no-highlight">114</i>&nbsp;//        for (i = 0; i &lt; 8; ++i){
+<i class="no-highlight">115</i>&nbsp;//            System.out.print(out[i].row + &quot;,&quot; + out[i].column + &quot; | &quot;);
+<i class="no-highlight">116</i>&nbsp;//        }
+<b class="fc"><i class="no-highlight">117</i>&nbsp;        return out;</b>
+<i class="no-highlight">118</i>&nbsp;    }
+<i class="no-highlight">119</i>&nbsp;
+<i class="no-highlight">120</i>&nbsp;    /** Returns a String representing grid, showing the numbers (or . for squares with value 0). */
+<i class="no-highlight">121</i>&nbsp;    static String toString(Square[][] grid) {
+<b class="fc"><i class="no-highlight">122</i>&nbsp;        String out = new String();</b>
+<b class="fc"><i class="no-highlight">123</i>&nbsp;        out = &quot;&quot;;</b>
+<b class="fc"><i class="no-highlight">124</i>&nbsp;        for (int row = 0; row &lt; 9; ++row){</b>
+<b class="fc"><i class="no-highlight">125</i>&nbsp;            for (int col = 0; col &lt; 9; ++col){</b>
+<b class="fc"><i class="no-highlight">126</i>&nbsp;                if (grid[row][col].value == 0) {</b>
+<b class="nc"><i class="no-highlight">127</i>&nbsp;                    out += &quot;.&quot;;</b>
+<b class="fc"><i class="no-highlight">128</i>&nbsp;                } else out += grid[row][col].value;</b>
+<i class="no-highlight">129</i>&nbsp;            }
+<b class="fc"><i class="no-highlight">130</i>&nbsp;            out += &quot;\n&quot;;</b>
+<i class="no-highlight">131</i>&nbsp;        }
+<b class="fc"><i class="no-highlight">132</i>&nbsp;        return out;</b>
+<i class="no-highlight">133</i>&nbsp;    }
+<i class="no-highlight">134</i>&nbsp;
+<i class="no-highlight">135</i>&nbsp;    /**
+<i class="no-highlight">136</i>&nbsp;     * Returns a 9x9 array of Squares, each of which has value 0 and knows about the other squares in its row,
+<i class="no-highlight">137</i>&nbsp;     * column, and block.
+<i class="no-highlight">138</i>&nbsp;     */
+<i class="no-highlight">139</i>&nbsp;    static Square[][] createSquares() {
+<b class="nc"><i class="no-highlight">140</i>&nbsp;        Square[][] out = new Square[9][9];</b>
+<i class="no-highlight">141</i>&nbsp;
+<b class="nc"><i class="no-highlight">142</i>&nbsp;        for (int col = 0; col &lt; 9; ++col){</b>
+<b class="nc"><i class="no-highlight">143</i>&nbsp;            for (int row = 0; row &lt; 9; ++row){</b>
+<b class="nc"><i class="no-highlight">144</i>&nbsp;                out[row][col] = new Square();</b>
+<i class="no-highlight">145</i>&nbsp;            }
+<i class="no-highlight">146</i>&nbsp;        }
+<b class="nc"><i class="no-highlight">147</i>&nbsp;        for (int col = 0; col &lt; 9; ++col){</b>
+<b class="nc"><i class="no-highlight">148</i>&nbsp;            for (int row = 0; row &lt; 9; ++row){</b>
+<b class="nc"><i class="no-highlight">149</i>&nbsp;                Location here = createLocation(row,col);</b>
+<b class="nc"><i class="no-highlight">150</i>&nbsp;                out[row][col].value = 0;</b>
+<b class="nc"><i class="no-highlight">151</i>&nbsp;                out[row][col].row = populate(findRow(here), out);</b>
+<b class="nc"><i class="no-highlight">152</i>&nbsp;                out[row][col].column = populate(findColumn(here), out);</b>
+<b class="nc"><i class="no-highlight">153</i>&nbsp;                out[row][col].block = populate(findBlock(here), out);</b>
+<i class="no-highlight">154</i>&nbsp;            }
+<i class="no-highlight">155</i>&nbsp;        }
+<b class="nc"><i class="no-highlight">156</i>&nbsp;        return out;</b>
+<i class="no-highlight">157</i>&nbsp;    }
+<i class="no-highlight">158</i>&nbsp;
+<i class="no-highlight">159</i>&nbsp;    /**
+<i class="no-highlight">160</i>&nbsp;     * Returns a 9x9 array of Squares, each of which has value 0 and knows about the other squares in its row,
+<i class="no-highlight">161</i>&nbsp;     * column, and block. Any numbers in diagram are filled in to the grid; empty squares should be given as
+<i class="no-highlight">162</i>&nbsp;     * periods.
+<i class="no-highlight">163</i>&nbsp;     */
+<i class="no-highlight">164</i>&nbsp;    static Square[][] createSquares(String diagram) {
+<b class="fc"><i class="no-highlight">165</i>&nbsp;        Square[][] out = new Square[9][9];</b>
+<b class="fc"><i class="no-highlight">166</i>&nbsp;        int i = 0;</b>
+<b class="fc"><i class="no-highlight">167</i>&nbsp;        for (int r = 0; r &lt; 9; ++r) {</b>
+<b class="fc"><i class="no-highlight">168</i>&nbsp;            for (int c = 0; c &lt; 9; ++c) {</b>
+<b class="fc"><i class="no-highlight">169</i>&nbsp;                out[r][c] = new Square();</b>
+<b class="fc"><i class="no-highlight">170</i>&nbsp;                if (i &gt;= diagram.length()) continue;</b>
+<b class="fc"><i class="no-highlight">171</i>&nbsp;                if (diagram.charAt(i) == &#39;.&#39;) {</b>
+<b class="fc"><i class="no-highlight">172</i>&nbsp;                    out[r][c].value = 0;</b>
+<i class="no-highlight">173</i>&nbsp;                } else {
+<b class="fc"><i class="no-highlight">174</i>&nbsp;                    out[r][c].value = Character.getNumericValue(diagram.charAt(i));</b>
+<i class="no-highlight">175</i>&nbsp;                }
+<b class="fc"><i class="no-highlight">176</i>&nbsp;                i++;</b>
+<i class="no-highlight">177</i>&nbsp;            }
+<b class="fc"><i class="no-highlight">178</i>&nbsp;            i++;</b>
+<i class="no-highlight">179</i>&nbsp;        }
+<b class="fc"><i class="no-highlight">180</i>&nbsp;        for (int col = 0; col &lt; 9; ++col){</b>
+<b class="fc"><i class="no-highlight">181</i>&nbsp;            for (int row = 0; row &lt; 9; ++row){</b>
+<b class="fc"><i class="no-highlight">182</i>&nbsp;                Location here = createLocation(row,col);</b>
+<b class="fc"><i class="no-highlight">183</i>&nbsp;                out[row][col].row = populate(findRow(here), out);</b>
+<b class="fc"><i class="no-highlight">184</i>&nbsp;                out[row][col].column = populate(findColumn(here), out);</b>
+<b class="fc"><i class="no-highlight">185</i>&nbsp;                out[row][col].block = populate(findBlock(here), out);</b>
+<i class="no-highlight">186</i>&nbsp;            }
+<i class="no-highlight">187</i>&nbsp;        }
+<b class="fc"><i class="no-highlight">188</i>&nbsp;        return out;</b>
+<i class="no-highlight">189</i>&nbsp;    }
+<i class="no-highlight">190</i>&nbsp;
+<i class="no-highlight">191</i>&nbsp;    /**
+<i class="no-highlight">192</i>&nbsp;     * Takes an array of locations as arguments and returns the squares at location-referenced indices
+<i class="no-highlight">193</i>&nbsp;     * @param locations Locations in array to fetch squares for
+<i class="no-highlight">194</i>&nbsp;     * @param map Reference to map being created
+<i class="no-highlight">195</i>&nbsp;     * @return an array of the squares at [locations] in map
+<i class="no-highlight">196</i>&nbsp;     */
+<i class="no-highlight">197</i>&nbsp;    private static Square[] populate(Location[] locations, Square[][] map) {
+<b class="fc"><i class="no-highlight">198</i>&nbsp;        Square[] out = new Square[locations.length];</b>
+<b class="fc"><i class="no-highlight">199</i>&nbsp;        for (int i = 0; i &lt; locations.length; i++) {</b>
+<b class="fc"><i class="no-highlight">200</i>&nbsp;            out[i] = map[locations[i].row][locations[i].column];</b>
+<i class="no-highlight">201</i>&nbsp;        }
+<b class="fc"><i class="no-highlight">202</i>&nbsp;        return out;</b>
+<i class="no-highlight">203</i>&nbsp;    }
+<i class="no-highlight">204</i>&nbsp;
+<i class="no-highlight">205</i>&nbsp;    /**
+<i class="no-highlight">206</i>&nbsp;     * Returns a boolean array of length 10. For each digit, the corresponding entry in the array is true
+<i class="no-highlight">207</i>&nbsp;     * if that number does not appear elsewhere in s&#39;s row, column, or block.
+<i class="no-highlight">208</i>&nbsp;     */
+<i class="no-highlight">209</i>&nbsp;    static boolean[] findValidNumbers(Square s) {
+<b class="fc"><i class="no-highlight">210</i>&nbsp;        boolean[] validNumbers = new boolean[10];</b>
+<i class="no-highlight">211</i>&nbsp;        // Set all indices to &quot;true&quot; to prep for process of elimination
+<b class="fc"><i class="no-highlight">212</i>&nbsp;        for (int i = 0; i &lt; validNumbers.length; ++i) validNumbers[i] = true;</b>
+<i class="no-highlight">213</i>&nbsp;        // Go through every array at once.
+<i class="no-highlight">214</i>&nbsp;        // Every number found sets its corresponding index in validNumbers to false.
+<i class="no-highlight">215</i>&nbsp;        // Ex.: s has a &quot;7&quot; in s.row[i].value. validNumbers[7] is set to false.
+<b class="fc"><i class="no-highlight">216</i>&nbsp;        for (int i = 0; i &lt; 8; ++i){</b>
+<b class="fc"><i class="no-highlight">217</i>&nbsp;            validNumbers[s.row[i].value] = false;</b>
+<b class="fc"><i class="no-highlight">218</i>&nbsp;            validNumbers[s.column[i].value] = false;</b>
+<b class="fc"><i class="no-highlight">219</i>&nbsp;            validNumbers[s.block[i].value] = false;</b>
+<i class="no-highlight">220</i>&nbsp;        }
+<b class="fc"><i class="no-highlight">221</i>&nbsp;        return validNumbers;</b>
+<i class="no-highlight">222</i>&nbsp;    }
+<i class="no-highlight">223</i>&nbsp;
+<i class="no-highlight">224</i>&nbsp;    /**
+<i class="no-highlight">225</i>&nbsp;     * Returns true if grid can be solved. If so, grid is modified to fill in that solution.
+<i class="no-highlight">226</i>&nbsp;     */
+<i class="no-highlight">227</i>&nbsp;    static boolean solve(Square[][] grid) {
+<b class="fc"><i class="no-highlight">228</i>&nbsp;        Location[] queue = createQueue(grid);</b>
+<b class="fc"><i class="no-highlight">229</i>&nbsp;        for (int i = 0; i &lt; queue.length; i++) {</b>
+<b class="fc"><i class="no-highlight">230</i>&nbsp;            if (queue[i] == null) return false;</b>
+<i class="no-highlight">231</i>&nbsp;        }
+<b class="fc"><i class="no-highlight">232</i>&nbsp;        solve(grid, queue, 0, 1);</b>
+<b class="fc"><i class="no-highlight">233</i>&nbsp;        return true;</b>
+<i class="no-highlight">234</i>&nbsp;    }
+<i class="no-highlight">235</i>&nbsp;
+<i class="no-highlight">236</i>&nbsp;    /**
+<i class="no-highlight">237</i>&nbsp;     * Recursive arm of solving mechanism
+<i class="no-highlight">238</i>&nbsp;     * @param queue order in which to guess
+<i class="no-highlight">239</i>&nbsp;     * @param i index in guess queue
+<i class="no-highlight">240</i>&nbsp;     * @param g guess
+<i class="no-highlight">241</i>&nbsp;     * @return true =&gt; puzzle solved. false =&gt; guess again/go back
+<i class="no-highlight">242</i>&nbsp;     */
+<i class="no-highlight">243</i>&nbsp;    static boolean solve(Square[][] grid, Location[] queue, int i, int g) {
+<b class="fc"><i class="no-highlight">244</i>&nbsp;        if (i == queue.length) return true; // Exception: queue finished (we win)</b>
+<b class="fc"><i class="no-highlight">245</i>&nbsp;        Location coords = queue[i]; // easier reference</b>
+<b class="fc"><i class="no-highlight">246</i>&nbsp;        boolean[] options = findValidNumbers(grid[coords.row][coords.column]);</b>
+<b class="fc"><i class="no-highlight">247</i>&nbsp;        if (g &gt;= options.length){</b>
+<b class="fc"><i class="no-highlight">248</i>&nbsp;            return false; // Exception: index out of bounds. No options work.</b>
+<i class="no-highlight">249</i>&nbsp;        }
+<b class="fc"><i class="no-highlight">250</i>&nbsp;        if (!options[g]){</b>
+<b class="fc"><i class="no-highlight">251</i>&nbsp;            return solve(grid, queue, i, g+1);</b>
+<i class="no-highlight">252</i>&nbsp;        }
+<b class="fc"><i class="no-highlight">253</i>&nbsp;        grid[coords.row][coords.column].value = g; // Guesses g, which IS a valid option</b>
+<i class="no-highlight">254</i>&nbsp;        // Default/continue statement
+<b class="fc"><i class="no-highlight">255</i>&nbsp;        if (solve(grid,queue,i+1, 1)) { // GO DEEPER! Try next index. This is START</b>
+<b class="fc"><i class="no-highlight">256</i>&nbsp;            return true;</b>
+<i class="no-highlight">257</i>&nbsp;        } else {
+<b class="fc"><i class="no-highlight">258</i>&nbsp;            grid[coords.row][coords.column].value = 0; // undo guess</b>
+<b class="fc"><i class="no-highlight">259</i>&nbsp;            if (solve(grid, queue, i, g+1)){</b>
+<b class="fc"><i class="no-highlight">260</i>&nbsp;                return true;</b>
+<i class="no-highlight">261</i>&nbsp;            }
+<i class="no-highlight">262</i>&nbsp;        }
+<b class="fc"><i class="no-highlight">263</i>&nbsp;        return false;</b>
+<i class="no-highlight">264</i>&nbsp;    }
+<i class="no-highlight">265</i>&nbsp;
+<i class="no-highlight">266</i>&nbsp;    public static int countEmpty(Square[][] grid) {
+<b class="fc"><i class="no-highlight">267</i>&nbsp;        int out = 0;</b>
+<b class="fc"><i class="no-highlight">268</i>&nbsp;        for (int c = 0; c &lt; 9; ++c){</b>
+<b class="fc"><i class="no-highlight">269</i>&nbsp;            for (int r = 0; r &lt; 9; ++r){</b>
+<b class="fc"><i class="no-highlight">270</i>&nbsp;                if (grid[r][c].value == 0){</b>
+<b class="fc"><i class="no-highlight">271</i>&nbsp;                    out++;</b>
+<i class="no-highlight">272</i>&nbsp;                }
+<i class="no-highlight">273</i>&nbsp;            }
+<i class="no-highlight">274</i>&nbsp;        }
+<b class="fc"><i class="no-highlight">275</i>&nbsp;        return out;</b>
+<i class="no-highlight">276</i>&nbsp;    }
+<i class="no-highlight">277</i>&nbsp;
+<i class="no-highlight">278</i>&nbsp;    public static Location[] createQueue(Square[][] grid) {
+<b class="fc"><i class="no-highlight">279</i>&nbsp;        int[][] options = new int[9][9];</b>
+<b class="fc"><i class="no-highlight">280</i>&nbsp;        int emptySquares = countEmpty(grid);</b>
+<b class="fc"><i class="no-highlight">281</i>&nbsp;        Location[] queue = new Location[emptySquares];</b>
+<b class="fc"><i class="no-highlight">282</i>&nbsp;        for (int row = 0; row &lt; 9; row++){</b>
+<b class="fc"><i class="no-highlight">283</i>&nbsp;            for (int col = 0; col &lt; 9; col++){</b>
+<b class="fc"><i class="no-highlight">284</i>&nbsp;                if (grid[row][col].value != 0){</b>
+<b class="fc"><i class="no-highlight">285</i>&nbsp;                    options[row][col] = 0;</b>
+<b class="fc"><i class="no-highlight">286</i>&nbsp;                    continue;</b>
+<i class="no-highlight">287</i>&nbsp;                }
+<b class="fc"><i class="no-highlight">288</i>&nbsp;                options[row][col] = countOptions(grid, createLocation(row,col));</b>
+<i class="no-highlight">289</i>&nbsp;            }
+<i class="no-highlight">290</i>&nbsp;        }
+<b class="fc"><i class="no-highlight">291</i>&nbsp;        int i = 0;</b>
+<b class="fc"><i class="no-highlight">292</i>&nbsp;        int s = 1;</b>
+<i class="no-highlight">293</i>&nbsp;        do {
+<b class="fc"><i class="no-highlight">294</i>&nbsp;            for (int row = 0; row &lt; 9; row++){</b>
+<b class="fc"><i class="no-highlight">295</i>&nbsp;                for (int col = 0; col &lt; 9; col++){</b>
+<b class="fc"><i class="no-highlight">296</i>&nbsp;                    if (options[row][col] == 0) {</b>
+<b class="fc"><i class="no-highlight">297</i>&nbsp;                        continue;</b>
+<b class="fc"><i class="no-highlight">298</i>&nbsp;                    } else if (options[row][col] &lt;= s &amp;&amp; !inQueue(queue, createLocation(row,col))){</b>
+<b class="fc"><i class="no-highlight">299</i>&nbsp;                        queue[i] = createLocation(row,col);</b>
+<i class="no-highlight">300</i>&nbsp;                        //System.out.println(&quot;Adding location (&quot; + row + &quot;,&quot; + col + &quot;) to index &quot; + i + &quot;. options = &quot; + options[row][col]);
+<b class="fc"><i class="no-highlight">301</i>&nbsp;                        i++;</b>
+<i class="no-highlight">302</i>&nbsp;                    }
+<i class="no-highlight">303</i>&nbsp;                }
+<i class="no-highlight">304</i>&nbsp;            }
+<b class="fc"><i class="no-highlight">305</i>&nbsp;            s++;</b>
+<b class="fc"><i class="no-highlight">306</i>&nbsp;        } while (s &lt; 9 &amp;&amp; i &lt; queue.length);</b>
+<b class="fc"><i class="no-highlight">307</i>&nbsp;        for (int j = 0; j &lt; queue.length; j++) {</b>
+<b class="fc"><i class="no-highlight">308</i>&nbsp;            if (queue[j] == null) System.out.println(&quot;Uh oh! Queue index &quot; + j + &quot; is null!&quot;);</b>
+<i class="no-highlight">309</i>&nbsp;        }
+<b class="fc"><i class="no-highlight">310</i>&nbsp;        return queue;</b>
+<i class="no-highlight">311</i>&nbsp;    }
+<i class="no-highlight">312</i>&nbsp;
+<i class="no-highlight">313</i>&nbsp;    private static int countOptions(Square[][] grid, Location coords){
+<i class="no-highlight">314</i>&nbsp;        boolean[] validNumbers;
+<b class="fc"><i class="no-highlight">315</i>&nbsp;        validNumbers = findValidNumbers(grid[coords.row][coords.column]);</b>
+<b class="fc"><i class="no-highlight">316</i>&nbsp;        return countOptions(grid, coords, validNumbers, 0);</b>
+<i class="no-highlight">317</i>&nbsp;    }
+<i class="no-highlight">318</i>&nbsp;
+<i class="no-highlight">319</i>&nbsp;    private static int countOptions(Square[][] grid, Location coords, boolean[] validNumbers, int i){
+<b class="fc"><i class="no-highlight">320</i>&nbsp;        if (i &gt;= validNumbers.length) return 0;</b>
+<b class="fc"><i class="no-highlight">321</i>&nbsp;        if (validNumbers[i]) return 1 + countOptions(grid, coords, validNumbers, i+1);</b>
+<b class="fc"><i class="no-highlight">322</i>&nbsp;        return countOptions(grid, coords, validNumbers, i+1);</b>
+<i class="no-highlight">323</i>&nbsp;    }
+<i class="no-highlight">324</i>&nbsp;
+<i class="no-highlight">325</i>&nbsp;    private static boolean inQueue(Location[] queue, Location check){
+<b class="fc"><i class="no-highlight">326</i>&nbsp;        for (int i = 0; i &lt; queue.length; ++i) {</b>
+<b class="fc"><i class="no-highlight">327</i>&nbsp;            if (queue[i] == null) return false;</b>
+<b class="fc"><i class="no-highlight">328</i>&nbsp;            if (queue[i].row == check.row &amp;&amp; queue[i].column == check.column) return true;</b>
+<i class="no-highlight">329</i>&nbsp;        }
+<b class="nc"><i class="no-highlight">330</i>&nbsp;        return false;</b>
+<i class="no-highlight">331</i>&nbsp;    }
+<i class="no-highlight">332</i>&nbsp;
+<i class="no-highlight">333</i>&nbsp;}
+</div>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+        var codeBlock = document.getElementById('sourceCode');
+
+        if (codeBlock) {
+            hljs.highlightBlock(codeBlock);
+        }
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2022-03-05 17:53</div>
+</div>
+</body>
+</html>
